@@ -1,0 +1,13 @@
+version: '2.2'
+
+services:
+  ws:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VARIANT: bullseye
+    init: true
+    shm_size: '1gb'
+    volumes:
+      - ..:/workspace:cached

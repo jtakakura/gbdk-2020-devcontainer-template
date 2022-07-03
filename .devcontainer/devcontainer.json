@@ -1,0 +1,33 @@
+{
+	"name": "gbdev",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "ws",
+	"workspaceFolder": "/workspace",
+
+	"features": {
+		"desktop-lite": {
+			"password": "vscode",
+			"webPort": "6080",
+			"vncPort": "5901"
+		}
+	},
+
+	// Set *default* container specific settings.json values on container create.
+	"settings": {},
+
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"ms-vscode.cpptools",
+		"emulicious.emulicious-debugger",
+	],
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	"forwardPorts": [6080, 5901],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "gcc -v",
+
+	// Comment out this line to run as root instead.
+	"remoteUser": "vscode"
+
+}

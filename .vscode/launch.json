@@ -1,0 +1,27 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "emulicious-debugger",
+            "request": "launch",
+            "name": "Launch debug build in Emulicious",
+            "program": "${workspaceFolder}/build/rom.gb",
+            "port": 58870,
+            "stopOnEntry": false,
+            "javaPath": "/usr/bin/java",
+            "emuliciousPath": "/opt/emulicious/Emulicious.jar",
+            "preLaunchTask": "Debug",
+        },
+        {
+            "type": "emulicious-debugger",
+            "request": "launch",
+            "name": "Launch debug build(Color) in Emulicious",
+            "program": "${workspaceFolder}/build/rom.gbc",
+            "port": 58870,
+            "stopOnEntry": false,
+            "javaPath": "/usr/bin/java",
+            "emuliciousPath": "/opt/emulicious/Emulicious.jar",
+            "preLaunchTask": "Debug(Color)",
+        },
+    ]
+}
