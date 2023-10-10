@@ -1,15 +1,14 @@
-PROJECT_NAME=hello
+PROJECT_NAME=rom
 
 LCC = lcc
-CFLAGS += -Wa-n -mgbz80:gb --no-std-crt0 --fsigned-char --use-stdout -Dnonbanked= -I$(GBDK_PATH)/include -D__PORT_gbz80 -D__TARGET_gb -I$(GBDK_PATH)/include/asm  -DFILE_NAME=$(basename $(<F)) -MMD
+CFLAGS += -Wa-n -msm83:gb --no-std-crt0 --fsigned-char --use-stdout -Dnonbanked= -I$(GBDK_PATH)/include -D__PORT_sm83 -D__TARGET_gb -I$(GBDK_PATH)/include/asm  -DFILE_NAME=$(basename $(<F)) -MMD
 
 SRCDIR   = src
 OBJDIR   = obj
 BINDIR   = bin
 
-SOURCES  := $(wildcard $(SRCDIR)/*.c)
-INCLUDES := $(wildcard $(SRCDIR)/*.h)
-OBJECTS  := $(SOURCES:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
+SOURCES  := $(shell find $(SRCDIR) -name '*.c')
+OBJECTS  := $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SOURCES))
 
 # DMG/Color flags
 EXTENSION = gb
@@ -23,17 +22,14 @@ $(BINDIR):
 	@echo Creating directory $(BINDIR)
 	@mkdir $(BINDIR)
 
-$(OBJDIR):
-	@echo Creating directory $(OBJDIR)
-	@mkdir $(OBJDIR)
-
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
-	@echo Compiling $<
-	@$(LCC) $(CFLAGS) -c -o $@ $<	
+	@echo Compiling
+	@mkdir -p $(@D)
+	@$(LCC) $(LFLAGS) $(CFLAGS) -c -o $@ $<	
 
-$(BINDIR)/$(PROJECT_NAME).$(EXTENSION): $(BINDIR) $(OBJDIR) $(OBJECTS)
+$(BINDIR)/$(PROJECT_NAME).$(EXTENSION): $(BINDIR) $(OBJECTS)
 	@echo Linking
-	@$(LCC) -Wm-yc -o $(BINDIR)/$(PROJECT_NAME).$(EXTENSION) $(OBJECTS)
+	@$(LCC) $(LFLAGS) -Wa-l -Wl-m -Wl-j -o $(BINDIR)/$(PROJECT_NAME).$(EXTENSION) $(OBJECTS)
 
 
 .PHONY: clean release debug color
@@ -41,13 +37,12 @@ $(BINDIR)/$(PROJECT_NAME).$(EXTENSION): $(BINDIR) $(OBJDIR) $(OBJECTS)
 
 clean:
 	@echo Cleaning
-	@rm -rf $(BINDIR)
-	@rm  -f $(OBJDIR)/*.*
+	@rm -rf $(BINDIR) $(OBJDIR)
 
 release: CFLAGS += -DNDEBUG
 release: $(BINDIR)/$(PROJECT_NAME).$(EXTENSION)
 
-debug: CFLAGS += --debug
+debug: CFLAGS += -debug
 debug: LFLAGS += -y
 debug: PROJECT_NAME := $(PROJECT_NAME)-debug
 debug: $(BINDIR)/$(PROJECT_NAME).$(EXTENSION)
